@@ -21,41 +21,14 @@ const variationId1 = uuid();
 const variationId2 = uuid();
 
 const intialState = {
-  catalogs: [
-    {
-      id: catalogId,
-      name: "morning",
-      from: 6,
-      to: 11,
-      items: [itemId],
-    },
-  ],
   categories: [
-    {
-      id: catId,
-      name: "Mexican",
-    },
+    
   ],
   items: [
-    {
-      id: itemId,
-      name: "Burrito",
-      catId,
-    },
+    
   ],
   variations: [
-    {
-      id: variationId1,
-      itemId,
-      name: "Wet",
-      price: 10.45,
-    },
-    {
-      id: variationId2,
-      itemId,
-      name: "Eggs and cheese",
-      price: 12.45,
-    },
+    
   ],
 };
 

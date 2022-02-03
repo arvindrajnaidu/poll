@@ -32,7 +32,7 @@ function ListItemLink(props) {
 }
 
 export default function ItemList() {
-  const { catalog, categories, items, variations, dispatch } =
+  const { categories, items, variations, dispatch } =
     useContext(InventoryContext);
 
   const [itemList, setItemList] = useState([]);

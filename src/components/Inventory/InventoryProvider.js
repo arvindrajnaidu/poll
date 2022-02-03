@@ -21,9 +21,6 @@ const variationId1 = uuid();
 const variationId2 = uuid();
 
 const intialState = {
-  catalogs: [
-    
-  ],
   categories: [
     
   ],
@@ -182,12 +179,11 @@ const AppProvider = ({ children }) => {
   useEffect(() => {
     if (!didLoadFromStorage) return;
     // console.log("Writing inventory");
-    const { categories, variations, items, catalogs } = state;
+    const { categories, variations, items } = state;
     const dbState = {
       categories,
       variations,
       items,
-      catalogs,
     };
     // Write to storage
     window.CasualSeller.db.setItem(
