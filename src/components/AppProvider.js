@@ -47,7 +47,7 @@ function reducer(state, action) {
       };
     }
     case "load-settings": {
-      return { ...state, settings: {...action.settings}};
+      return { ...state, settings: { ...action.settings } };
     }
     default:
       return state;
@@ -56,7 +56,10 @@ function reducer(state, action) {
 
 const dummyHandler = () => {};
 
-export const AppProvider = ({ children, onOrderSubmitted = dummyHandler }) => {
+export const AppProvider = ({
+  children,
+  onOrderSubmitted = dummyHandler,
+}) => {
   const [menu, setMenu] = useState({ name: "Catalog", items: [] });
   const [state, dispatch] = useReducer(reducer, initialState);
   const [nav, setNav] = useState({ current: "catalog", previous: null });
@@ -64,19 +67,21 @@ export const AppProvider = ({ children, onOrderSubmitted = dummyHandler }) => {
   const [didLoadFromStorage, setDidLoadFromStorage] = useState(false);
 
   useEffect(() => {
-    const settingsStr = window.localStorage.getItem("seller_settings");
-    setDidLoadFromStorage(true);
-    if (!settingsStr) return;
-    dispatch({
-      type: "load-settings",
-      settings: JSON.parse(settingsStr),
-    });
+    window.CasualSeller.db.getItem("seller_settings").then((settings) => {
+      setDidLoadFromStorage(true);
+      if (!settings) return;
+      dispatch({
+        type: "load-settings",
+        settings,
+      });
+    })
   }, []);
 
   useEffect(() => {
     if (!didLoadFromStorage) return;
-    // console.log("Writing inventory");
-    window.localStorage.setItem("seller_settings", JSON.stringify(state.settings));
+    window.CasualSeller.db.setItem(
+      "seller_settings", state.settings
+    )    
   }, [state]);
 
   function navigateTo(route) {

@@ -59,8 +59,8 @@ function reducer(state, action) {
         _newOrder.total = Object.keys(lineItems).reduce(function (acc, varId) {
           acc = acc + lineItems[varId].price * lineItems[varId].qty;
           return acc;
-        }, 0.0);
-        console.log(_newOrder);
+        }, 0.0); // console.log(newOrder)
+
         return _objectSpread(_objectSpread({}, state), {}, {
           order: _newOrder
         });

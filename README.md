@@ -68,3 +68,46 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+### Fake Inventory
+
+const intialState = {
+  catalogs: [
+    {
+      id: catalogId,
+      name: "morning",
+      from: 6,
+      to: 11,
+      items: [itemId],
+    },
+  ],
+  categories: [
+    {
+      id: catId,
+      name: "Mexican",
+    },
+  ],
+  items: [
+    {
+      id: itemId,
+      name: "Burrito",
+      catId,
+    },
+  ],
+  variations: [
+    {
+      id: variationId1,
+      itemId,
+      name: "Wet",
+      price: 10.45,
+    },
+    {
+      id: variationId2,
+      itemId,
+      name: "Eggs and cheese",
+      price: 12.45,
+    },
+  ],
+};

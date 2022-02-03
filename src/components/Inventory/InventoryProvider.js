@@ -22,40 +22,16 @@ const variationId2 = uuid();
 
 const intialState = {
   catalogs: [
-    {
-      id: catalogId,
-      name: "morning",
-      from: 6,
-      to: 11,
-      items: [itemId],
-    },
+    
   ],
   categories: [
-    {
-      id: catId,
-      name: "Mexican",
-    },
+    
   ],
   items: [
-    {
-      id: itemId,
-      name: "Burrito",
-      catId,
-    },
+    
   ],
   variations: [
-    {
-      id: variationId1,
-      itemId,
-      name: "Wet",
-      price: 10.45,
-    },
-    {
-      id: variationId2,
-      itemId,
-      name: "Eggs and cheese",
-      price: 12.45,
-    },
+    
   ],
 };
 
@@ -123,6 +99,7 @@ function reducer(state, action) {
           name: v.name || "Regular",
           id: uuid(),
           itemId,
+          isAvailable: true,
         };
       });
       return {
@@ -187,18 +164,19 @@ function reducer(state, action) {
   }
 }
 
-const AppProvider = ({ children, claims }) => {
+const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, intialState);
   const [didLoadFromStorage, setDidLoadFromStorage] = useState(false);
+
   useEffect(() => {
-    const inventoryStr = window.localStorage.getItem("inventory");
-    setDidLoadFromStorage(true);
-    if (!inventoryStr) return;
-    // console.log("Loading", inventoryStr);
-    dispatch({
-      type: "load_inventory",
-      inventory: JSON.parse(inventoryStr),
-    });
+    window.CasualSeller.db.getItem("inventory").then((inventory) => {
+      setDidLoadFromStorage(true);
+      if (!inventory) return;
+      dispatch({
+        type: "load_inventory",
+        inventory,
+      });
+    })
   }, []);
 
   useEffect(() => {
@@ -211,7 +189,11 @@ const AppProvider = ({ children, claims }) => {
       items,
       catalogs,
     };
-    window.localStorage.setItem("inventory", JSON.stringify(dbState));
+    // Write to storage
+    window.CasualSeller.db.setItem(
+      "inventory",
+      dbState
+    )
   }, [state]);
 
   return (

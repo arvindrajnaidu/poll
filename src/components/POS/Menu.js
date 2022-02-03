@@ -65,9 +65,9 @@ export default function CenteredGrid() {
       <Grid container spacing={3}>
         <Grid item xs={8}>
           <Grid container spacing={3}>
-            {cursor.items.map((item) => {
+            {cursor.items.map((item, i) => {
               return (
-                <Grid item xs={4}>
+                <Grid item xs={4} key={`cat-${i}`}>
                   <Button
                     variant="contained"
                     style={{ width: '100%', height: 80 }}
@@ -123,15 +123,15 @@ export default function CenteredGrid() {
         </Grid>
         <Grid item xs={4}>
           <Typography variant="h5" style={{padding: 10}}>
-            {settings.name}
+            {settings ? settings.name : ''}
           </Typography>
           <Typography style={{padding: 10}}>
             {'Order'}
           </Typography>
           <List className={classes.root} id={'orderlist'}>
-            {Object.keys(order.lineItems).map((item) => {
+            {Object.keys(order.lineItems).map((item, i) => {
               return (
-                <ListItem>
+                <ListItem key={`lineitem-${i}`} >
                   <ListItemText primary={order.lineItems[item].name} />
                   <ListItemText
                     style={{ textAlign: 'right' }}

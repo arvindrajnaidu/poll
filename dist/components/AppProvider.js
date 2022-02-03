@@ -43,13 +43,13 @@ var initialState = {
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'set-call':
-      console.log('SEtting call');
+    case "set-call":
+      console.log("SEtting call");
       return _objectSpread(_objectSpread({}, state), {}, {
         call: action.call
       });
 
-    case 'add-item':
+    case "add-item":
       {
         var _newOrder = _objectSpread({}, state.order);
 
@@ -69,7 +69,7 @@ function reducer(state, action) {
         });
       }
 
-    case 'remove-item':
+    case "remove-item":
       var newOrder = _objectSpread({}, state.order);
 
       if (!newOrder[action.id]) return;
@@ -79,10 +79,33 @@ function reducer(state, action) {
         order: newOrder
       });
 
-    case 'set-current-call':
+    case "set-current-call":
       {
         return _objectSpread(_objectSpread({}, state), {}, {
           currentCall: action.call
+        });
+      }
+
+    case "save-settings":
+      {
+        var name = action.name,
+            phone = action.phone,
+            address = action.address,
+            upi = action.upi;
+        return _objectSpread(_objectSpread({}, state), {}, {
+          settings: {
+            name: name,
+            phone: phone,
+            address: address,
+            upi: upi
+          }
+        });
+      }
+
+    case "load-settings":
+      {
+        return _objectSpread(_objectSpread({}, state), {}, {
+          settings: _objectSpread({}, action.settings)
         });
       }
 
@@ -91,12 +114,15 @@ function reducer(state, action) {
   }
 }
 
+var dummyHandler = function dummyHandler() {};
+
 var AppProvider = function AppProvider(_ref) {
   var children = _ref.children,
-      claims = _ref.claims;
+      _ref$onOrderSubmitted = _ref.onOrderSubmitted,
+      onOrderSubmitted = _ref$onOrderSubmitted === void 0 ? dummyHandler : _ref$onOrderSubmitted;
 
   var _useState = (0, _react.useState)({
-    name: 'Catalog',
+    name: "Catalog",
     items: []
   }),
       _useState2 = _slicedToArray(_useState, 2),
@@ -109,12 +135,32 @@ var AppProvider = function AppProvider(_ref) {
       dispatch = _useReducer2[1];
 
   var _useState3 = (0, _react.useState)({
-    current: 'catalog',
+    current: "catalog",
     previous: null
   }),
       _useState4 = _slicedToArray(_useState3, 2),
       nav = _useState4[0],
       setNav = _useState4[1];
+
+  var _useState5 = (0, _react.useState)(false),
+      _useState6 = _slicedToArray(_useState5, 2),
+      didLoadFromStorage = _useState6[0],
+      setDidLoadFromStorage = _useState6[1];
+
+  (0, _react.useEffect)(function () {
+    var settingsStr = window.localStorage.getItem("seller_settings");
+    setDidLoadFromStorage(true);
+    if (!settingsStr) return;
+    dispatch({
+      type: "load-settings",
+      settings: JSON.parse(settingsStr)
+    });
+  }, []);
+  (0, _react.useEffect)(function () {
+    if (!didLoadFromStorage) return; // console.log("Writing inventory");
+
+    window.localStorage.setItem("seller_settings", JSON.stringify(state.settings));
+  }, [state]);
 
   function navigateTo(route) {
     var oldNav = nav;
@@ -127,6 +173,7 @@ var AppProvider = function AppProvider(_ref) {
   return /*#__PURE__*/_react.default.createElement(AppContext.Provider, {
     value: _objectSpread(_objectSpread({
       menu: menu,
+      onOrderSubmitted: onOrderSubmitted,
       route: nav.current,
       navigateTo: navigateTo
     }, state), {}, {

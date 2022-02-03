@@ -19,16 +19,6 @@ var _List = _interopRequireDefault(require("@material-ui/core/List"));
 
 var _ListItem = _interopRequireDefault(require("@material-ui/core/ListItem"));
 
-var _ListItemIcon = _interopRequireDefault(require("@material-ui/core/ListItemIcon"));
-
-var _ListItemText = _interopRequireDefault(require("@material-ui/core/ListItemText"));
-
-var _Divider = _interopRequireDefault(require("@material-ui/core/Divider"));
-
-var _Inbox = _interopRequireDefault(require("@material-ui/icons/Inbox"));
-
-var _Drafts = _interopRequireDefault(require("@material-ui/icons/Drafts"));
-
 var _Accordion = _interopRequireDefault(require("@material-ui/core/Accordion"));
 
 var _AccordionSummary = _interopRequireDefault(require("@material-ui/core/AccordionSummary"));
@@ -42,8 +32,6 @@ var _ExpandMore = _interopRequireDefault(require("@material-ui/icons/ExpandMore"
 var _currency = _interopRequireDefault(require("currency.js"));
 
 var _core = require("@material-ui/core");
-
-var _Comment = _interopRequireDefault(require("@material-ui/icons/Comment"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -177,7 +165,7 @@ function ItemList() {
           width: "100%",
           marginRight: 100
         }
-      }, /*#__PURE__*/_react.default.createElement("div", null, v.name), /*#__PURE__*/_react.default.createElement("div", null, (0, _currency.default)(v.price).format("$0.00"))), /*#__PURE__*/_react.default.createElement(_core.ListItemSecondaryAction, null, /*#__PURE__*/_react.default.createElement(_core.Switch, {
+      }, /*#__PURE__*/_react.default.createElement(_Typography.default, null, v.name), /*#__PURE__*/_react.default.createElement(_Typography.default, null, (0, _currency.default)(v.price).format("$0.00"))), /*#__PURE__*/_react.default.createElement(_core.ListItemSecondaryAction, null, /*#__PURE__*/_react.default.createElement(_core.Switch, {
         checked: !!v.isAvailable,
         onChange: function onChange(e) {
           dispatch({

@@ -45,6 +45,8 @@ var _html2canvas = _interopRequireDefault(require("html2canvas"));
 
 var _POSProvider = require("./POSProvider");
 
+var _AppProvider = require("../AppProvider");
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function _getRequireWildcardCache(nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -111,10 +113,14 @@ var printOrder = /*#__PURE__*/function () {
 function CenteredGrid() {
   var classes = useStyles();
 
-  var _useContext = (0, _react.useContext)(_POSProvider.POSContext),
-      menu = _useContext.menu,
-      order = _useContext.order,
-      dispatch = _useContext.dispatch;
+  var _useContext = (0, _react.useContext)(_AppProvider.AppContext),
+      onOrderSubmitted = _useContext.onOrderSubmitted,
+      settings = _useContext.settings;
+
+  var _useContext2 = (0, _react.useContext)(_POSProvider.POSContext),
+      menu = _useContext2.menu,
+      order = _useContext2.order,
+      dispatch = _useContext2.dispatch;
 
   var _useState = (0, _react.useState)(menu),
       _useState2 = _slicedToArray(_useState, 2),
@@ -196,7 +202,16 @@ function CenteredGrid() {
   }, "Back"))), /*#__PURE__*/_react.default.createElement(_Grid.default, {
     item: true,
     xs: 4
-  }, /*#__PURE__*/_react.default.createElement(_List.default, {
+  }, /*#__PURE__*/_react.default.createElement(_Typography.default, {
+    variant: "h5",
+    style: {
+      padding: 10
+    }
+  }, settings.name), /*#__PURE__*/_react.default.createElement(_Typography.default, {
+    style: {
+      padding: 10
+    }
+  }, 'Order'), /*#__PURE__*/_react.default.createElement(_List.default, {
     className: classes.root,
     id: 'orderlist'
   }, Object.keys(order.lineItems).map(function (item) {
@@ -226,13 +241,14 @@ function CenteredGrid() {
       width: '100%'
     },
     onClick: function onClick() {
-      printOrder().then(function (png) {// sendMessage({
-        //   body: {
-        //     mimeType: 'image/png',
-        //     data: png.replace('data:image/png;base64,', ''),
-        //     fileName: 'payment-request.png',
-        //   },
-        // });
+      printOrder().then(function (png) {
+        onOrderSubmitted({
+          order: order,
+          img: {
+            mimeType: 'image/png',
+            data: png.replace('data:image/png;base64,', '')
+          }
+        });
       });
     }
   }, "Pay")))));

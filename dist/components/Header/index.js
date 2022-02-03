@@ -58,8 +58,9 @@ function ButtonAppBar(_ref) {
       return navigateTo('pos');
     }
   }, "POS"), /*#__PURE__*/_react.default.createElement(_Button.default, {
-    color: "inherit"
-  }, "Orders"), /*#__PURE__*/_react.default.createElement(_Button.default, {
-    color: "inherit"
+    color: "inherit",
+    onClick: function onClick() {
+      return navigateTo('settings');
+    }
   }, "Settings"))));
 }

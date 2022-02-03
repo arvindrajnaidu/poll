@@ -123,6 +123,7 @@ function reducer(state, action) {
           name: v.name || "Regular",
           id: uuid(),
           itemId,
+          isAvailable: true,
         };
       });
       return {

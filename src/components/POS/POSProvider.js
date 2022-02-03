@@ -5,6 +5,7 @@ import React, {
   useReducer,
   useContext,
 } from "react";
+
 import { InventoryContext } from "../Inventory/InventoryProvider";
 // import { menuData } from './menu-fixture';
 export const POSContext = createContext({});
@@ -41,9 +42,8 @@ function reducer(state, action) {
   }
 }
 
-export const POSProvider = ({ children, claims }) => {
+export const POSProvider = ({ children }) => {
   const { categories, items, variations } = useContext(InventoryContext);
-
   const [menu, setMenu] = useState({ name: "Catalog", items });
   const [state, dispatch] = useReducer(reducer, initialState);
 
