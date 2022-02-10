@@ -1,10 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { InventoryContext } from "./InventoryProvider";
-import Button from "@material-ui/core/Button";
-import { IconButton, Paper, Switch, Typography } from "@material-ui/core";
+import { IconButton, Typography } from "@material-ui/core";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
 

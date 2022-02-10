@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import { IconButton, Paper, Switch, Typography } from "@material-ui/core";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
 import DeleteOutlined from "@material-ui/icons/DeleteOutlined";
+import InventoryGroup from './InventoryGroup'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +65,27 @@ export default function VariationsForm({ itemId, variations = [], setVariations 
     });
   }, [variations]);
 
+  function onGroupSelected (variantGroup) {
+    // let newCount = variantGroup.variations.length + state.count
+    let newVariations = []
+    if (variations.length) {
+      for (let vgVariation of variantGroup.variations) {
+        for (let variation of variations) {
+          newVariations.push({
+            ...variation, 
+            name: `${variation.name} ${vgVariation.name}`,
+            isAvailable: true,
+          })
+        }
+      }
+    } else {
+      let addedVariations = variantGroup.variations.map(v => ({...v, itemId}))
+      newVariations = [...variations, ...addedVariations];  
+    }
+    
+    setVariations(newVariations);
+  }
+
   let VariationFormArray = [];
 
   for (let i = 0; i < state.count; i++) {
@@ -97,8 +119,10 @@ export default function VariationsForm({ itemId, variations = [], setVariations 
         <AddCircleOutline fontSize="inherit" />
       </IconButton>
       </div>
-     
-      {VariationFormArray}      
+      {VariationFormArray}  
+      <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+      < InventoryGroup onGroupSelected={onGroupSelected} />
+      </div>
     </div>
   );
 }

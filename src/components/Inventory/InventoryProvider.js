@@ -21,15 +21,9 @@ const variationId1 = uuid();
 const variationId2 = uuid();
 
 const intialState = {
-  categories: [
-    
-  ],
-  items: [
-    
-  ],
-  variations: [
-    
-  ],
+  categories: [],
+  items: [],
+  variations: [],
 };
 
 function reducer(state, action) {
@@ -142,15 +136,13 @@ function reducer(state, action) {
     }
     case "update_variation": {
       // During updates a variant may have been added
-      let updatedVariations = state.variations.map(
-        (v) => {
-          if (v.id === action.id) {
-            return {...v, isAvailable: action.isAvailable}
-          }
-          return v
+      let updatedVariations = state.variations.map((v) => {
+        if (v.id === action.id) {
+          return { ...v, isAvailable: action.isAvailable };
         }
-      );
-      
+        return v;
+      });
+
       return {
         ...state,
         variations: updatedVariations,
@@ -173,7 +165,7 @@ const AppProvider = ({ children }) => {
         type: "load_inventory",
         inventory,
       });
-    })
+    });
   }, []);
 
   useEffect(() => {
@@ -186,10 +178,7 @@ const AppProvider = ({ children }) => {
       items,
     };
     // Write to storage
-    window.CasualSeller.db.setItem(
-      "inventory",
-      dbState
-    )
+    window.CasualSeller.db.setItem("inventory", dbState);
   }, [state]);
 
   return (

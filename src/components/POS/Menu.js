@@ -144,7 +144,7 @@ export default function CenteredGrid() {
               {/* <ListItemText primary={order.lineItems[item].name} /> */}
               <ListItemText
                 style={{ textAlign: 'right' }}
-                primary={currency(order.total).format('$0.00')}
+                primary={currency(order.total).format('₹0.00')}
               />
             </ListItem>
           </List>

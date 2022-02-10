@@ -12,25 +12,6 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import currency from "currency.js";
 import { ListItemSecondaryAction, Switch } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
-  },
-  accordianRoot: {
-    width: "100%",
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
-}));
-
-function ListItemLink(props) {
-  return <ListItem button component="a" {...props} />;
-}
-
 export default function ItemList() {
   const { categories, items, variations, dispatch } =
     useContext(InventoryContext);
@@ -99,7 +80,7 @@ export default function ItemList() {
                             }}
                           >
                             <Typography>{v.name}</Typography>
-                            <Typography>{currency(v.price).format("$0.00")}</Typography>
+                            <Typography>{currency(v.price, {pattern: `₹ #`}).format("0.00")}</Typography>
                           </div>
 
                           <ListItemSecondaryAction>
