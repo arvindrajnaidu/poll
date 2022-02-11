@@ -10,7 +10,7 @@ import { InventoryContext } from "../Inventory/InventoryProvider";
 // import { menuData } from './menu-fixture';
 export const POSContext = createContext({});
 
-const initialState = { order: { lineItems: {}, total: 0.0 } };
+const initialState = {};
 
 function reducer(state, action) {
   switch (action.type) {

@@ -1,6 +1,6 @@
 {
-  "name": "casualseller",
-  "version": "0.1.13",
+  "name": "poll",
+  "version": "0.0.1",
   "private": false,
   "main": "dist/App.js",
   "files": [

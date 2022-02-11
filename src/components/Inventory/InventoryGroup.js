@@ -5,14 +5,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 const variationGroups = [
     {
-        name: "Cut",
-        variations: [{ name: "Small peices" }, { name: "Medium peices" }, { name: "Big Peices" }],
+        name: "Yes / No/ Maybe",
+        choices: [{ name: "Yes" }, { name: "No" }, { name: "Maybe" }],
     }, {
-        name: "Quantity in KG",
-        variations: [{ name: "250g" }, { name: "500g" }, { name: "750g" }, { name: "1kg" },{ name: "1.5kg" }],
-    }, {
-        name: "Spice Level",
-        variations: [{ name: "Hot" }, { name: "Medium" }, { name: "Mild" }],
+        name: "Agree / Disagree",
+        choices: [{ name: "Agree" }, { name: "Disagree" }],
     },
 ]
 
@@ -32,7 +29,7 @@ export default function InventoryGroup({onGroupSelected}) {
   return (
     <div>
       <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick}>
-        Inventory Group
+        Choice Sets
       </Button>
       <Menu
         id="simple-menu"
@@ -43,7 +40,7 @@ export default function InventoryGroup({onGroupSelected}) {
       >
           {
               variationGroups.map((vg, i) => {
-                  return <MenuItem onClick={() => handleClose(i)}>{vg.name}</MenuItem>
+                  return <MenuItem key={`item-${i}`} onClick={() => handleClose(i)}>{vg.name}</MenuItem>
               })
           }
       </Menu>

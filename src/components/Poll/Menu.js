@@ -27,7 +27,7 @@ import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { Button } from '@material-ui/core';
 import html2canvas from 'html2canvas';
-import { POSContext } from './POSProvider';
+import { POSContext } from './PollProvider';
 import { AppContext } from '../AppProvider';
 // import { AppContext } from '../providers/AppProvider';
 

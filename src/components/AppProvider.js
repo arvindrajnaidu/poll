@@ -1,104 +1,111 @@
 import React, { useEffect, createContext, useState, useReducer } from "react";
+import {v4 as uuid} from 'uuid'
 
 export const AppContext = createContext({});
 
-const initialState = { call: null, order: { lineItems: {}, total: 0.0 } };
+function PollInstance({ poll, groupId }) {
+  let votes = poll.choices.reduce((acc, choice) => {
+    acc[choice.id] = new Set()
+    return acc
+  }, {})
+
+  return {
+    id: uuid(),
+    groupId,
+    poll,
+    votes,
+  };
+}
+
+const initialState = { pollInstances: {} };
 
 function reducer(state, action) {
   switch (action.type) {
-    case "set-call":
-      console.log("SEtting call");
-      return { ...state, call: action.call };
-    case "add-item": {
-      let newOrder = { ...state.order };
-      let { lineItems } = newOrder;
-      if (!lineItems[action.id])
-        lineItems[action.id] = {
-          qty: 0,
-          name: action.name,
-          price: action.price,
-        };
-      lineItems[action.id].qty = lineItems[action.id].qty + 1;
-      newOrder.total = Object.keys(lineItems).reduce((acc, varId) => {
-        acc = acc + lineItems[varId].price * lineItems[varId].qty;
-        return acc;
-      }, 0.0);
-      return { ...state, order: newOrder };
+    case 'load-state': {
+      return { ...action.state };
     }
-    case "remove-item":
-      let newOrder = { ...state.order };
-      if (!newOrder[action.id]) return;
-      if (newOrder[action.id] === 0) return;
-      newOrder[action.id] = newOrder[action.id] - 1;
-      return { ...state, order: newOrder };
-    case "set-current-call": {
-      return { ...state, currentCall: action.call };
+    case "vote": {
+      const { from, selectedButtonId } = action.vote;
+      const [pollInstanceId, choiceId] = selectedButtonId.split('.')
+      const newPollInstance = {...state.pollInstances[pollInstanceId]}
+      newPollInstance.votes[choiceId].add(from)
+      const newPollInstances = {...state.pollInstances, [pollInstanceId]: newPollInstance}
+      return {...state, pollInstances: newPollInstances};
     }
-    case "save-settings": {
-      const { name, phone, address, upi } = action;
-      return {
-        ...state,
-        settings: {
-          name,
-          phone,
-          address,
-          upi,
-        },
-      };
-    }
-    case "load-settings": {
-      return { ...state, settings: { ...action.settings } };
+    case "create-pollinstance": {
+      const { pollInstance } = action;
+      const instances = {...state.pollInstances, [pollInstance.id]: pollInstance};
+      return {...state, pollInstances: instances};
     }
     default:
       return state;
   }
 }
 
-const dummyHandler = () => {};
+const dummyHandler = function (){};
+const dummyElement = {dispatchEvent: () => {}, addEventListener: () => {}}
 
 export const AppProvider = ({
   children,
-  onOrderSubmitted = dummyHandler,
+  EventConstructor = dummyHandler,
+  element = dummyElement,
+  keyValueStore,
 }) => {
-  const [menu, setMenu] = useState({ name: "Catalog", items: [] });
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [nav, setNav] = useState({ current: "catalog", previous: null });
-
   const [didLoadFromStorage, setDidLoadFromStorage] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-  useEffect(() => {
-    window.CasualSeller.db.getItem("seller_settings").then((settings) => {
-      setDidLoadFromStorage(true);
-      if (!settings) return;
-      dispatch({
-        type: "load-settings",
-        settings,
-      });
+  function createPollInstance (poll) {
+    const pollInstance = PollInstance({poll, groupId: 'group-1'})
+    // Maintian inernal state
+    dispatch({
+      type: 'create-pollinstance',
+      pollInstance
     })
+    // Emit an event
+    const event = new EventConstructor('poll-created', {
+      detail: {pollInstance}
+    })
+    element.dispatchEvent(event)
+  }
+
+  // Add a listener on the element given to listen to CustomEvents
+  useEffect(() => {
+    element.addEventListener("vote", (e) => {
+      dispatch({
+        type: e.type,
+        ...e.detail
+      });
+    });
+  }, []);
+
+  // Storage
+  useEffect(() => {
+    keyValueStore.getItem("poll_state").then((state) => {
+      setDidLoadFromStorage(true);
+      if (!state) return;
+      dispatch({
+        type: "load-state",
+        state,
+      });
+    });
   }, []);
 
   useEffect(() => {
     if (!didLoadFromStorage) return;
-    window.CasualSeller.db.setItem(
-      "seller_settings", state.settings
-    )    
+    // console.log("Writing inventory");
+    const { pollInstances } = state;
+    const dbState = {
+      pollInstances,
+    };
+    // Write to storage
+    keyValueStore.setItem("poll_state", dbState);
   }, [state]);
-
-  function navigateTo(route) {
-    let oldNav = nav;
-    setNav({
-      current: route,
-      previous: oldNav,
-    });
-  }
 
   return (
     <AppContext.Provider
       value={{
-        menu,
-        onOrderSubmitted,
-        route: nav.current,
-        navigateTo,
+        createPollInstance,
+        keyValueStore,
         ...state,
         dispatch,
       }}

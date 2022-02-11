@@ -18,7 +18,7 @@ import _ from 'underscore'
 export default function ItemList() {
   const { items, choices, dispatch } =
     useContext(InventoryContext);
-  const { polls,  createPollInstance } = useContext(AppContext)
+  const { pollInstances, onPollRequested } = useContext(AppContext)
 
   const [itemList, setItemList] = useState([]);
   // const classes = useStyles();
@@ -37,20 +37,21 @@ export default function ItemList() {
     setItemList(dbItems);
   }, [items, choices]);
 
+
   return (
     <div>
       <div
         style={{textAlign: "right" }}
       >
         <Typography>
-          {"All Polls"}
+          {"Current Polls"}
         </Typography>
       </div>
       <div style={{ marginTop: 20 }}>
-        {itemList.map((il) => {
+        {_.values(pollInstances).map((pollInstance, key) => {
           return (
-            <Accordion key={il.id}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />} id={il.id} style={{display: 'flex', marginLeft: 8, marginRight: 8}}>
+            <Accordion key={key}>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />} id={key} style={{display: 'flex', marginLeft: 8, marginRight: 8}}>
                 <div
                   style={{
                     display: "flex",
@@ -60,17 +61,26 @@ export default function ItemList() {
                   }}
                 >
                   <div style={{ flex: 2 }}>
-                    <Typography>{il.name}</Typography>
+                    <Typography>{pollInstance.poll.name}</Typography>
                   </div>
                 </div>
               </AccordionSummary>
               <AccordionDetails>
                 <div style={{ display: "flex", flexDirection: "column", width: '100%' }}>
                   <List style={{ flex: "100%"}}>
-                    {il.choices.map((v) => {
+                    {pollInstance.poll.choices.map((choice) => {
                       // console.log(v.id, 'Is the choice id', polls[v.id])
+                      let voteCount = 0
+                      _.values(pollInstance.votes).forEach(set => voteCount = voteCount + set.size)
+
+                      console.log(voteCount, '<< Vote Count')
+                      let bucket = pollInstance.votes[choice.id]  
+                      const progress = voteCount ? (bucket.size / voteCount) * 100 : 0
+
+                      // console.log(choice, bucket)
+                      // const choiceName = pollInstance.poll[bucket.id]
                       return (
-                        <ListItem button key={v.id}>
+                        <ListItem button key={choice.id}>
                           <div
                             style={{
                               display: "flex",
@@ -79,10 +89,10 @@ export default function ItemList() {
                               marginRight: 100,     
                             }}
                           >
-                            <Typography>{v.name}</Typography>
+                            <Typography>{choice.name}</Typography>
                             {/* <Typography>{currency(v.price, {pattern: `₹ #`}).format("0.00")}</Typography> */}
                           </div>
-                          {/* <ProgressIndicator  choiceBucket={polls[v.id]} /> */}
+                          <ProgressIndicator  progress={progress} />
                           {/* <ListItemSecondaryAction>
                             
                           </ListItemSecondaryAction> */}
@@ -90,54 +100,6 @@ export default function ItemList() {
                       );
                     })}
                   </List>
-                  <div
-                    style={{
-                      display: "flex",
-                      margin: 10,
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Button
-                      color={"secondary"}
-                      onClick={() => {
-                        dispatch({
-                          type: "delete_item",
-                          id: il.id,
-                        });
-                      }}
-                    >
-                      {"Delete"}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        dispatch({
-                          type: "set_selected_item",
-                          id: il.id,
-                        });
-                      }}
-                    >
-                      {"Reset"}
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        dispatch({
-                          type: "set_selected_item",
-                          id: il.id,
-                        });
-                      }}
-                    >
-                      {"Edit"}
-                    </Button>
-                    <Button
-                      // variant="contained"
-                      color="primary"
-                      onClick={() => {
-                        createPollInstance(il)
-                      }}
-                    >
-                      {"Ask"}
-                    </Button>
-                  </div>
                 </div>
               </AccordionDetails>
             </Accordion>

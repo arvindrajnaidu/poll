@@ -22,25 +22,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function VariationForm({ index, variation, setState }) {
+function ChoiceForm({ index, choice, setState }) {
   return (
     <div elavation={0} style={{ marginTop: 10, flexDirection: 'row', display: 'flex', width: '100%', alignItems: 'center' }}>
       <TextField
         style={{flex: 3}}
         id="name"
-        value={variation ? variation.name || "" : ""}
-        label="Variation Name"
+        value={choice ? choice.name || "" : ""}
+        label="Choice"
         onChange={(e) => {
-          setState({ ...variation, name: e.target.value });
-        }}
-      />
-      <TextField
-        style={{flex: 3}}
-        id="price"
-        label="Price"
-        value={variation ? variation.price || "" : ""}
-        onChange={(e) => {
-          setState({ ...variation, price: parseFloat(e.target.value) });
+          setState({ ...choice, name: e.target.value });
         }}
       />
       <div style={{width: 20}}>
@@ -55,56 +46,40 @@ function VariationForm({ index, variation, setState }) {
   );
 }
 
-export default function VariationsForm({ itemId, variations = [], setVariations }) {
+export default function ChoicesForm({ itemId, choices = [], setChoices }) {
   const classes = useStyles();
-  const [state, setState] = useState({ count: variations.length });
+  const [state, setState] = useState({ count: choices.length });
 
   useEffect(() => {
     setState({
-      count: variations.length,
+      count: choices.length,
     });
-  }, [variations]);
+  }, [choices]);
 
-  function onGroupSelected (variantGroup) {
-    // let newCount = variantGroup.variations.length + state.count
-    let newVariations = []
-    if (variations.length) {
-      for (let vgVariation of variantGroup.variations) {
-        for (let variation of variations) {
-          newVariations.push({
-            ...variation, 
-            name: `${variation.name} ${vgVariation.name}`,
-            isAvailable: true,
-          })
-        }
-      }
-    } else {
-      let addedVariations = variantGroup.variations.map(v => ({...v, itemId}))
-      newVariations = [...variations, ...addedVariations];  
-    }
-    
-    setVariations(newVariations);
+  function onGroupSelected (choiceGroup) {
+    let addedChoices = choiceGroup.choices.map(v => ({...v, itemId}))
+    setChoices(addedChoices);
   }
 
-  let VariationFormArray = [];
+  let ChoiceFormArray = [];
 
   for (let i = 0; i < state.count; i++) {
-    VariationFormArray.push(
-      <VariationForm
+    ChoiceFormArray.push(
+      <ChoiceForm
         key={`key-${i}`}
-        setState={(variationState, index) => {
-          let newVariations = [...variations];
-          if (!variationState) {
+        setState={(choiceState, index) => {
+          let newChoices = [...choices];
+          if (!choiceState) {
             // User wants it removed
-            let variationsWithoutIndex = newVariations.filter((item, j) => j !== index)
-            return setVariations(variationsWithoutIndex);
+            let choicesWithoutIndex = newChoices.filter((item, j) => j !== index)
+            return setChoices(choicesWithoutIndex);
           }
-          if (!newVariations[i]) newVariations[i] = {};
-          newVariations[i] = { ...newVariations[i], ...variationState, itemId };
-          setVariations(newVariations);
+          if (!newChoices[i]) newChoices[i] = {};
+          newChoices[i] = { ...newChoices[i], ...choiceState, itemId };
+          setChoices(newChoices);
         }}
         index={i}
-        variation={variations[i]}
+        choice={choices[i]}
       />
     );
   }
@@ -112,14 +87,14 @@ export default function VariationsForm({ itemId, variations = [], setVariations 
   return (
     <div style={{ display: "flex", flexDirection: "column",}}>
       <div style={{ fontFamily: "Roboto", marginTop: 20, marginBottom: 10, display: 'flex', justifyContent: 'space-between'}}>
-        <Typography className={classes.heading}>{"Variations"}</Typography>
+        <Typography className={classes.heading}>{"Choices"}</Typography>
         <IconButton aria-label="delete"  size="small" onClick={() => {
           setState({ ...state, count: state.count + 1 });
         }}>
         <AddCircleOutline fontSize="inherit" />
       </IconButton>
       </div>
-      {VariationFormArray}  
+      {ChoiceFormArray}  
       <div style={{display: 'flex', justifyContent: 'flex-end'}}>
       < InventoryGroup onGroupSelected={onGroupSelected} />
       </div>
